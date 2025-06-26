@@ -1,0 +1,638 @@
+<dataset type="EDDTableFromDatabase" datasetID="glodap_v2_2023_iceberg2" active="true">
+    <sourceUrl>jdbc:trino://trino:8443/iceberg/glodap?user=test&password=S1mpl3Password&SSL=true&SSLVerification=NONE</sourceUrl>
+    <driverName>io.trino.jdbc.TrinoDriver</driverName>
+    <!--<connectionProperty name="SSL">true</connectionProperty>
+    <connectionProperty name="SSLVerification">NONE</connectionProperty>
+    <connectionProperty name="user">test</connectionProperty>
+    <connectionProperty name="password">S1mpl3Password</connectionProperty>-->
+    <catalogName></catalogName>
+    <schemaName></schemaName>
+    <tableName>glodap_v2_2023</tableName>
+    <orderBy>cruise,recordedtime</orderBy>
+    <reloadEveryNMinutes>10080</reloadEveryNMinutes>
+    <!-- sourceAttributes>
+    </sourceAttributes -->
+    <!-- Please specify the actual cdm_data_type (TimeSeries?) and related info below, for example...
+        <att name="cdm_timeseries_variables">station_id, longitude, latitude</att>
+        <att name="subsetVariables">station_id, longitude, latitude</att>
+    -->
+    <addAttributes>
+        <att name="cdm_data_type">Point</att>
+        <att name="Conventions">COARDS, CF-1.10, ACDD-1.3</att>
+        <att name="creator_name">GEOMAR ICOS Ocean Thematic Centre</att>
+        <att name="creator_type">institution</att>
+        <att name="creator_url">https://glodap.info/</att>
+        <att name="infoUrl">https://glodap.info/</att>
+        <att name="institution">GEOMAR ICOS Ocean Thematic Centre</att>
+        <att name="keywords">centre, cfc, chloroflourocarbon, control, data, geomar, glodapv2.2023, icos, ocean, quality, thematic</att>
+        <att name="license">[standard]</att>
+        <att name="sourceUrl">(local database)</att>
+        <att name="standard_name_vocabulary">CF Standard Name Table v70</att>
+        <att name="summary">The Global Ocean Data Analysis Project (GLODAP) is a synthesis activity for ocean surface to bottom biogeochemical data collected through chemical analysis of water samples. Data for 13 core variables (salinity, oxygen, phosphate, nitrate, silicate, dissolved inorganic carbon, total alkalinity, pH, ChloroFlouroCarbon (CFC)-11, CFC-12, CFC-113, CCl4 and SF6) are subjected to primary and secondary quality control to identify outliers and correct for measurement biases.</att>
+        <att name="title">GLODAPv2.2023</att>
+    </addAttributes>
+<dataVariable>
+  <sourceName>
+   station
+  </sourceName>
+  <destinationName>
+   station
+  </destinationName>
+  <dataType>
+   String
+  </dataType>
+  <addAttributes>
+   <att name="units">
+    Not applicable
+   </att>
+   <att name="ioos_category">
+    Identifier
+   </att>
+   <att name="long_name">
+    Station name
+   </att>
+   <att name="comment">
+    A name used to identify a location that has over time been revisited for the purpose of repeat measurement as part of a long-term observation series. Sometimes termed a "site" and OceanSITES define as a defined geographic location where sustained oceanographic, meteorological or other observations are made. Note: A site should be thought of as a point in space, i.e. a nominal position, with a small area extent around it, such that successive observations from anywhere within this area reasonably represent conditions at the nominal position for the major scientific questions that the observations address.
+   </att>
+   <att name="sdn_uom_urn">
+    SDN:P06::XXXX
+   </att>
+   <att name="sdn_uom_name">
+    Not applicable
+   </att>
+   <att name="technical_data">
+    true
+   </att>
+  </addAttributes>
+ </dataVariable>
+<dataVariable>
+  <sourceName>
+   bottomdepth
+  </sourceName>
+  <destinationName>
+   bottomdepth
+  </destinationName>
+  <dataType>
+   double
+  </dataType>
+  <addAttributes>
+   <att name="standard_name">
+    sea_floor_depth_below_sea_surface
+   </att>
+   <att name="units">
+    m
+   </att>
+   <att name="ioos_category">
+    Bathymetry
+   </att>
+   <att name="long_name">
+    sea floor depth below sea surface
+   </att>
+   <att name="comment">
+    The sea-floor depth at the location identified by the positional metadata in the dataset.
+   </att>
+   <att name="sdn_parameter_urn">
+    SDN:P01::MBANZZZZ
+   </att>
+   <att name="sdn_parameter_name">
+    Sea-floor depth (below instantaneous sea level) {bathymetric depth} in the water body
+   </att>
+   <att name="sdn_uom_urn">
+    SDN:P06::ULAA
+   </att>
+   <att name="sdn_uom_name">
+    Metres
+   </att>
+   <att name="technical_data">
+    true
+   </att>
+  </addAttributes>
+ </dataVariable>
+
+<dataVariable>
+  <sourceName>
+   cruise
+  </sourceName>
+  <destinationName>
+   cruise
+  </destinationName>
+  <dataType>
+   String
+  </dataType>
+  <addAttributes>
+   <att name="units">
+    Not applicable
+   </att>
+   <att name="ioos_category">
+    Identifier
+   </att>
+   <att name="long_name">
+    cruise name
+   </att>
+   <att name="comment">
+    Name given to a research cruise or survey.
+   </att>
+   <att name="sdn_uom_urn">
+    SDN:P06::XXXX
+   </att>
+   <att name="sdn_uom_name">
+    Not applicable
+   </att>
+   <att name="technical_data">
+    true
+   </att>
+  </addAttributes>
+ </dataVariable>
+ <dataVariable>
+  <sourceName>
+   expocode
+  </sourceName>
+  <destinationName>
+   expocode
+  </destinationName>
+  <dataType>
+   String
+  </dataType>
+  <addAttributes>
+   <att name="units">
+    Not applicable
+   </att>
+   <att name="ioos_category">
+    Identifier
+   </att>
+   <att name="long_name">
+    Expedition code
+   </att>
+   <att name="comment">
+    EXPOCODE, or the "expedition code", is a unique alphanumeric identifier defined by the National Oceanographic Data Center (NODC) of the US. The code defines a standard nomenclature for cruise labels of research vessels and intends to avoid confusion in oceanographic data management. The code was used by international projects (WOCE, CarboOcean) and is considered a de facto standard in the international hydrographic community beginning with the Climate Variability Program (CLIVAR) and the EU-Project Eurofleets.
+   </att>
+   <att name="sdn_uom_urn">
+    SDN:P06::XXXX
+   </att>
+   <att name="sdn_uom_name">
+    Not applicable
+   </att>
+   <att name="technical_data">
+    true
+   </att>
+  </addAttributes>
+ </dataVariable>
+<dataVariable>
+  <sourceName>
+   latitude
+  </sourceName>
+  <destinationName>
+   latitude
+  </destinationName>
+  <dataType>
+   double
+  </dataType>
+  <addAttributes>
+   <att name="standard_name">
+    latitude
+   </att>
+   <att name="units">
+    degrees_north
+   </att>
+   <att name="ioos_category">
+    Location
+   </att>
+   <att name="axis">
+    Y
+   </att>
+   <att name="long_name">
+    latitude of measurement
+   </att>
+   <att name="reference">
+    WGS84
+   </att>
+   <att name="coordinate_reference_frame">
+    urn:ogc:def:crs:EPSG::4326
+   </att>
+   <att name="_FillValue">
+    99999
+   </att>
+   <att name="valid_min">
+    -90
+   </att>
+   <att name="valid_max">
+    90
+   </att>
+   <att name="QC_indicator">
+    nominal value
+   </att>
+   <att name="Processing_level">
+    Data manually reviewed
+   </att>
+   <att name="sdn_parameter_urn">
+    SDN:P01::ALATZZ01
+   </att>
+   <att name="sdn_parameter_uri">
+    https://vocab.nerc.ac.uk/collection/P01/current/ALATZZ01/
+   </att>
+   <att name="sdn_parameter_name">
+    Latitude north
+   </att>
+   <att name="sdn_uom_urn">
+    SDN:P06::DEGN
+   </att>
+   <att name="sdn_uom_uri">
+    https://vocab.nerc.ac.uk/collection/P06/current/DEGN/
+   </att>
+   <att name="sdn_uom_name">
+    Degrees north
+   </att>
+  </addAttributes>
+ </dataVariable>
+ <dataVariable>
+  <sourceName>
+   longitude
+  </sourceName>
+  <destinationName>
+   longitude
+  </destinationName>
+  <dataType>
+   double
+  </dataType>
+  <addAttributes>
+   <att name="standard_name">
+    longitude
+   </att>
+   <att name="units">
+    degrees_east
+   </att>
+   <att name="ioos_category">
+    Location
+   </att>
+   <att name="axis">
+    X
+   </att>
+   <att name="long_name">
+    longitude of measurement
+   </att>
+   <att name="reference">
+    WGS84
+   </att>
+   <att name="coordinate_reference_frame">
+    urn:ogc:def:crs:EPSG::4326
+   </att>
+   <att name="_FillValue">
+    99999
+   </att>
+   <att name="valid_min">
+    -180
+   </att>
+   <att name="valid_max">
+    180
+   </att>
+   <att name="QC_indicator">
+    nominal value
+   </att>
+   <att name="Processing_level">
+    Data manually reviewed
+   </att>
+   <att name="sdn_parameter_urn">
+    SDN:P01::ALONZZ01
+   </att>
+   <att name="sdn_parameter_uri">
+    https://vocab.nerc.ac.uk/collection/P01/current/ALONZZ01/
+   </att>
+   <att name="sdn_parameter_name">
+    Longitude east
+   </att>
+   <att name="sdn_uom_urn">
+    SDN:P06::DEGE
+   </att>
+   <att name="sdn_uom_uri">
+    https://vocab.nerc.ac.uk/collection/P06/current/DEGE/
+   </att>
+   <att name="sdn_uom_name">
+    Degrees east
+   </att>
+  </addAttributes>
+ </dataVariable>
+<dataVariable>
+  <sourceName>
+   depth
+  </sourceName>
+  <destinationName>
+   depth
+  </destinationName>
+  <dataType>
+   double
+  </dataType>
+  <addAttributes>
+   <att name="standard_name">
+    depth
+   </att>
+   <att name="units">
+    meters
+   </att>
+   <att name="ioos_category">
+    Location
+   </att>
+   <att name="positive">
+    down
+   </att>
+   <att name="axis">
+    Z
+   </att>
+   <att name="long_name">
+    depth of measurement
+   </att>
+   <att name="reference">
+    mean_sea_level
+   </att>
+   <att name="coordinate_reference_frame">
+    urn:ogc:def:crs:EPSG::5715
+   </att>
+   <att name="valid_min">
+    0
+   </att>
+   <att name="valid_max">
+    12000
+   </att>
+   <att name="QC_indicator">
+    nominal value
+   </att>
+   <att name="Processing_level">
+    Data manually reviewed
+   </att>
+   <att name="sdn_parameter_urn">
+    SDN:P01::ADEPZZ01
+   </att>
+   <att name="sdn_parameter_uri">
+    https://vocab.nerc.ac.uk/collection/P01/current/ADEPZZ01/
+   </att>
+   <att name="sdn_parameter_name">
+    Depth (spatial coordinate) relative to water surface in the water body
+   </att>
+   <att name="sdn_uom_urn">
+    SDN:P06::ULAA
+   </att>
+   <att name="sdn_uom_uri">
+    https://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+   </att>
+   <att name="sdn_uom_name">
+    metres
+   </att>
+   <att name="sdn_qc">
+    7
+   </att>
+  </addAttributes>
+ </dataVariable>
+<dataVariable>
+  <sourceName>
+   salinity
+  </sourceName>
+  <destinationName>
+   salinity
+  </destinationName>
+  <dataType>
+   float
+  </dataType>
+  <addAttributes>
+   <att name="standard_name">
+    sea_water_salinity
+   </att>
+   <att name="units">
+    Dimensionless
+   </att>
+   <att name="ioos_category">
+    Salinity
+   </att>
+   <att name="coordinates">
+    TIME;DEPTH;LATITUDE;LONGITUDE
+   </att>
+   <att name="ancillary_variables">
+    salinity_qc
+   </att>
+   <att name="reference_scale">
+    PSS-78
+   </att>
+   <att name="atlantos_EOV_urn">
+    SDN:A05::EV_SALIN
+   </att>
+   <att name="atlantos_EOV_name">
+    Salinity
+   </att>
+   <att name="ices_PARAM_urn">
+    ICES:PARAM::PSAL
+   </att>
+   <att name="ices_PARAM_name">
+    salinity
+   </att>
+   <att name="msfd_descriptor_urn">
+    SDN:C45::D1
+   </att>
+   <att name="msfd_descriptor_name">
+    Biological diversity maintained
+   </att>
+   <att name="msfd_criteria_urn">
+    SDN:C46::C1_6
+   </att>
+   <att name="msfd_criteria_name">
+    Habitat condition
+   </att>
+   <att name="msfd_indicator_urn">
+    SDN:C47::IN1_6_3
+   </att>
+   <att name="msfd_indicator_name">
+    Physical, hydrological and chemical conditions
+   </att>
+   <att name="sdn_P08_urn">
+    SDN:P08::DS03
+   </att>
+   <att name="sdn_P08_name">
+    Physical oceanography
+   </att>
+   <att name="sdn_P03_urn">
+    SDN:P03::D025
+   </att>
+   <att name="sdn_P03_name">
+    Water column temperature and salinity
+   </att>
+   <att name="sdn_P02_urn">
+    SDN:P02::PSAL
+   </att>
+   <att name="sdn_P02_name">
+    Salinity of the water column
+   </att>
+   <att name="sdn_parameter_urn">
+    SDN:P01::PSALZZXX
+   </att>
+   <att name="sdn_parameter_uri">
+    https://vocab.nerc.ac.uk/collection/P01/current/PSALZZXX/
+   </att>
+   <att name="sdn_parameter_name">
+    Practical salinity of the water body by computation using UNESCO 1983 algorithm
+   </att>
+   <att name="sdn_uom_urn">
+    SDN:P06::UUUU
+   </att>
+   <att name="sdn_uom_uri">
+    https://vocab.nerc.ac.uk/collection/P06/current/UUUU/
+   </att>
+   <att name="sdn_uom_name">
+    Dimensionless
+   </att>
+   <att name="sdn_instrument_urn">
+    SDN:L22::TOOL0667
+   </att>
+   <att name="sdn_instrument_uri">
+    https://vocab.nerc.ac.uk/collection/L22/current/TOOL0667/
+   </att>
+   <att name="sdn_instrument_name">
+    Sea-Bird SBE 21 Thermosalinograph
+   </att>
+   <att name="sensor_model">
+    Sea-Bird SBE 21 Thermosalinograph
+   </att>
+   <att name="sensor_SeaVox_L22_code">
+    SDN:L22::TOOL0667
+   </att>
+   <att name="sensor_reference">
+    https://vocab.nerc.ac.uk/collection/L22/current/TOOL0667/
+   </att>
+   <att name="sensor_manufacturer">
+    Sea-Bird Scientific
+   </att>
+   <att name="sensor_manufacturer_uri">
+    https://vocab.nerc.ac.uk/collection/B75/current/ORG00226/
+   </att>
+   <att name="sensor_manufacturer_urn">
+    SDN:B75::ORG00226
+   </att>
+   <att name="sdn_qc_variable">
+    salinity_qc
+   </att>
+  </addAttributes>
+ </dataVariable>
+ <dataVariable>
+  <sourceName>
+   temperature
+  </sourceName>
+  <destinationName>
+   temperature
+  </destinationName>
+  <dataType>
+   float
+  </dataType>
+  <addAttributes>
+   <att name="standard_name">
+    sea_water_temperature
+   </att>
+   <att name="units">
+    degC
+   </att>
+   <att name="ioos_category">
+    Temperature
+   </att>
+   <att name="coordinates">
+    TIME;DEPTH;LATITUDE;LONGITUDE
+   </att>
+   <att name="ancillary_variables">
+    temperature_qc
+   </att>
+   <att name="reference_scale">
+    ITS-90
+   </att>
+   <att name="atlantos_EOV_urn">
+    SDN:A05::EV_SEATEMP
+   </att>
+   <att name="atlantos_EOV_name">
+    Temperature
+   </att>
+   <att name="ices_PARAM_urn">
+    ICES:PARAM::TEMP
+   </att>
+   <att name="ices_PARAM_name">
+    temperature
+   </att>
+   <att name="msfd_descriptor_urn">
+    SDN:C45::D1
+   </att>
+   <att name="msfd_descriptor_name">
+    Biological diversity maintained
+   </att>
+   <att name="msfd_criteria_urn">
+    SDN:C46::C1_6
+   </att>
+   <att name="msfd_criteria_name">
+    Habitat condition
+   </att>
+   <att name="msfd_indicator_urn">
+    SDN:C47::IN1_6_3
+   </att>
+   <att name="msfd_indicator_name">
+    Physical, hydrological and chemical conditions
+   </att>
+   <att name="sdn_P08_urn">
+    SDN:P08::DS03
+   </att>
+   <att name="sdn_P08_name">
+    Physical oceanography
+   </att>
+   <att name="sdn_P03_urn">
+    SDN:P03::D025
+   </att>
+   <att name="sdn_P03_name">
+    Water column temperature and salinity
+   </att>
+   <att name="sdn_P02_urn">
+    SDN:P02::TEMP
+   </att>
+   <att name="sdn_P02_name">
+    Temperature of the water column
+   </att>
+   <att name="sdn_parameter_urn">
+    SDN:P01::TEMPPR01
+   </att>
+   <att name="sdn_parameter_uri">
+    https://vocab.nerc.ac.uk/collection/P01/current/TEMPPR01/
+   </att>
+   <att name="sdn_parameter_name">
+    Temperature of the water body
+   </att>
+   <att name="sdn_uom_urn">
+    SDN:P06::UPAA
+   </att>
+   <att name="sdn_uom_uri">
+    https://vocab.nerc.ac.uk/collection/P06/current/UPAA/
+   </att>
+   <att name="sdn_uom_name">
+    Degrees Celsius
+   </att>
+   <att name="sdn_instrument_urn">
+    SDN:L22::TOOL0191
+   </att>
+   <att name="sdn_instrument_uri">
+    https://vocab.nerc.ac.uk/collection/L22/current/TOOL0191/
+   </att>
+   <att name="sdn_instrument_name">
+    Sea-Bird SBE 38 thermometer
+   </att>
+   <att name="sensor_model">
+    Sea-Bird SBE 38 thermometer
+   </att>
+   <att name="sensor_SeaVox_L22_code">
+    SDN:L22::TOOL0191
+   </att>
+   <att name="sensor_reference">
+    https://vocab.nerc.ac.uk/collection/L22/current/TOOL0191/
+   </att>
+   <att name="sensor_manufacturer">
+    Sea-Bird Scientific
+   </att>
+   <att name="sensor_manufacturer_uri">
+    https://vocab.nerc.ac.uk/collection/B75/current/ORG00226/
+   </att>
+   <att name="sensor_manufacturer_urn">
+    SDN:B75::ORG00226
+   </att>
+   <att name="sdn_qc_variable">
+    temperature_qc
+   </att>
+  </addAttributes>
+ </dataVariable>
+</dataset>

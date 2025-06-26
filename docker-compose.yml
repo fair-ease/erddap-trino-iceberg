@@ -1,0 +1,176 @@
+services:
+  spark-iceberg:
+    image: tabulario/spark-iceberg
+    #container_name: spark-iceberg
+    build: spark/
+    networks:
+      iceberg_net:
+    depends_on:
+      - rest
+      - minio
+    volumes:
+      - ./warehouse:/home/iceberg/warehouse
+      - ./notebooks:/home/iceberg/notebooks/notebooks
+    environment:
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_REGION=${AWS_REGION}
+    ports:
+      - 8888:8888
+      - 8080:8080
+      - 10000:10000
+      - 10001:10001
+  rest:
+    image: tabulario/iceberg-rest
+    #container_name: iceberg-rest
+    networks:
+      iceberg_net:
+    ports:
+      - 8181:8181
+    environment:
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_REGION=${AWS_REGION}
+      - CATALOG_WAREHOUSE=s3://warehouse/
+      - CATALOG_IO__IMPL=org.apache.iceberg.aws.s3.S3FileIO
+      - CATALOG_S3_ENDPOINT=${AWS_ENDPOINT_URL}
+  minio:
+    image: minio/minio
+    #container_name: minio
+    environment:
+      - MINIO_ROOT_USER=${AWS_ACCESS_KEY_ID}
+      - MINIO_ROOT_PASSWORD=${AWS_SECRET_ACCESS_KEY}
+      - MINIO_DOMAIN=minio
+    networks:
+      iceberg_net:
+        aliases:
+          - warehouse.minio
+    ports:
+      - 9001:9001
+      - 9000:9000
+    command: ["server", "/data", "--console-address", ":9001"]
+  mc:
+    depends_on:
+      - minio
+    image: minio/mc
+    #container_name: mc
+    volumes:
+     - ./glodap_v2_2023_merged_master_t.parquet:/refdata/glodap_v2_2023_merged_master_t.parquet
+    networks:
+      iceberg_net:
+    environment:
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_REGION=${AWS_REGION}
+    entrypoint: >
+      /bin/sh -c "
+      until (/usr/bin/mc config host add minio http://minio:9000 ${AWS_ACCESS_KEY_ID} ${AWS_SECRET_ACCESS_KEY}) do echo '...waiting...' && sleep 1; done;
+      /usr/bin/mc rm -r --force minio/warehouse;
+      /usr/bin/mc mb minio/warehouse;
+      /usr/bin/mc policy set public minio/warehouse;
+      tail -f /dev/null
+      "
+  setup:
+    image: trinodb/trino
+    volumes:
+      - ./trino/keystore:/etc/trino/keystore
+    #user: "0"
+    command: >
+      bash -c '
+        if [ ! -f /etc/trino/keystore/keystore.jks ]; then
+          echo "Creating Keystore";
+          keytool -genkeypair -alias trino -dname "CN=trino, OU=erddap tester, O=erddap community, L=Galway, ST=Galway, C=IE" -storepass changeit -keyalg RSA -keysize 2048 -validity 10000 -keystore /etc/trino/keystore/keystore.jks -ext san=dns:trino;
+        fi;
+        echo "Creating client trustore";
+        keytool --exportcert -alias trino -storepass ${KEYSTORE_PASS} -file /etc/trino/keystore/trino_server.cer -keystore /etc/trino/keystore/keystore.jks;
+        keytool --importcert -alias trino -file /etc/trino/keystore/trino_server.cer  -storepass ${KEYSTORE_PASS} -keystore /etc/trino/keystore/truststore.jks;
+        echo "All done!";
+      '
+    #healthcheck:
+    #  test: ["CMD-SHELL", "[ -f /etc/trino/keystore.jks ]"]
+    #  interval: 1s
+    #  timeout: 5s
+    #  retries: 120
+    networks:
+     iceberg_net:
+
+  trino:
+    #depends_on:
+    # setup:
+    #   condition: service_healthy
+    image: trinodb/trino
+    #container_name: trino
+    ports:
+    - 8090:8080
+    - 8443:8443
+    networks:
+      iceberg_net:
+    volumes:
+      - ./trino/iceberg.properties:/etc/trino/catalog/iceberg.properties
+     # - ./trino/test-schema.sql:/home/trino/test-schema.sql
+      - ./trino/config.properties:/etc/trino/config.properties
+      #- ./trino/keystore.jks:/etc/trino/keystore.jks
+      - ./trino/keystore:/etc/trino/keystore
+      - ./trino/password-authenticator.properties:/etc/trino/password-authenticator.properties
+      #- ./trino/keystore/password.db:/etc/trino/keystore/password.db
+    environment:
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_REGION=${AWS_REGION}
+      - KEYSTORE_PASS=${KEYSTORE_PASS}
+
+  erddap:
+    image: axiom/docker-erddap:2.25.1-jdk21-openjdk
+    ports:
+      - 8095:8080
+    environment:
+      - ERDDAP_MIN_MEMORY=2G
+      - ERDDAP_MAX_MEMORY=3G
+      - ERDDAP_bigParentDirectory=/erddapData/
+      - ERDDAP_baseUrl=http://localhost:8095
+      - ERDDAP_baseHttpsUrl=https://localhost:8493
+      - ERDDAP_flagKeyKey=73976bb0-9cd4-11e3-a5e2-0800200c9TEST
+      - ERDDAP_emailEverythingTo=nobody@example.com
+      - ERDDAP_emailDailyReportsTo=nobody@example.com
+      - ERDDAP_emailFromAddress=nothing@example.com
+      - ERDDAP_emailUserName=
+      - ERDDAP_emailPassword=
+      - ERDDAP_emailProperties=
+      - ERDDAP_emailSmtpHost=
+      - ERDDAP_emailSmtpPort=
+      - ERDDAP_adminInstitution=FAIREASE Project
+      - ERDDAP_adminInstitutionUrl=https://github.com/axiom-data-science/docker-erddap
+      - ERDDAP_adminIndividualName=FAIREASE Admin
+      - ERDDAP_adminPosition=Software Engineer
+      - ERDDAP_adminPhone=555-555-5555
+      - ERDDAP_adminAddress=123 Irrelevant St.
+      - ERDDAP_adminCity=Nowhere
+      - ERDDAP_adminStateOrProvince=Nowhere
+      - ERDDAP_adminPostalCode=99504
+      - ERDDAP_adminCountry=Ireland
+      - DATASETSD_MARK_REMOVED_DATASETS_INACTIVE=1
+      - DATASETSD_REFRESH_MISSING_DATASETS=1
+      - DISABLE_CORS=1
+      #- AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      #- AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      #- AWS_REGION=${AWS_REGION}
+    volumes:
+      - ./erddapData:/erddapData
+      - ./erddap/datasets.xml:/usr/local/tomcat/content/erddap/datasets.xml:ro
+      - ./erddap/fairease_logo.svg:/usr/local/tomcat/content/erddap/images/fairease_logo.svg
+      - ./data:/data:ro
+      #- ./datasets.d:/datasets.d:ro
+      - ./tomcatLogs:/usr/local/tomcat/logs
+      - ./trino-jdbc-468.jar:/usr/local/tomcat/webapps/erddap/WEB-INF/lib/trino-jdbc-468.jar
+    networks:
+      iceberg_net:
+    restart: unless-stopped
+
+
+networks:
+  iceberg_net:
+volumes:
+  spark-iceberg: {}
+  setup: {}
+  trino: {}
+  erddap: {}
