@@ -64,7 +64,7 @@ services:
       - AWS_REGION=${AWS_REGION}
     entrypoint: >
       /bin/sh -c "
-      until (/usr/bin/mc config host add minio http://minio:9000 ${AWS_ACCESS_KEY_ID} ${AWS_SECRET_ACCESS_KEY}) do echo '...waiting...' && sleep 1; done;
+      until (/usr/bin/mc alias set minio http://minio:9000 ${AWS_ACCESS_KEY_ID} ${AWS_SECRET_ACCESS_KEY}) do echo '...waiting...' && sleep 1; done;
       /usr/bin/mc rm -r --force minio/warehouse;
       /usr/bin/mc mb minio/warehouse;
       /usr/bin/mc policy set public minio/warehouse;
@@ -120,16 +120,18 @@ services:
       - KEYSTORE_PASS=${KEYSTORE_PASS}
 
   erddap:
-    image: axiom/docker-erddap:2.25.1-jdk21-openjdk
+    #image: axiom/docker-erddap:2.25.1-jdk21-openjdk
+    image: erddap/erddap
     ports:
-      - 8095:8080
+      - "${ERDDAP_LOCAL_HTTP_PORT:-8080}:8080"
     environment:
-      - ERDDAP_MIN_MEMORY=2G
-      - ERDDAP_MAX_MEMORY=3G
+      #- ERDDAP_MIN_MEMORY=2G
+      #- ERDDAP_MAX_MEMORY=3G
+      - ERDDAP_MEMORY="${ERDDAP_MEMORY:-3g}"
       - ERDDAP_bigParentDirectory=/erddapData/
-      - ERDDAP_baseUrl=http://localhost:8095
-      - ERDDAP_baseHttpsUrl=https://localhost:8493
-      - ERDDAP_flagKeyKey=73976bb0-9cd4-11e3-a5e2-0800200c9TEST
+      - ERDDAP_baseUrl=${ERDDAP_baseUrl:-http://${ERDDAP_HOST:-localhost:${ERDDAP_LOCAL_HTTP_PORT:-8080}}}
+      - ERDDAP_baseHttpsUrl=${ERDDAP_baseHttpsUrl:-https://${ERDDAP_HOST:-localhost}}
+      - ERDDAP_flagKeyKey=${ERDDAP_FLAG_KEY_KEY}
       - ERDDAP_emailEverythingTo=nobody@example.com
       - ERDDAP_emailDailyReportsTo=nobody@example.com
       - ERDDAP_emailFromAddress=nothing@example.com
@@ -139,7 +141,7 @@ services:
       - ERDDAP_emailSmtpHost=
       - ERDDAP_emailSmtpPort=
       - ERDDAP_adminInstitution=FAIREASE Project
-      - ERDDAP_adminInstitutionUrl=https://github.com/axiom-data-science/docker-erddap
+      - ERDDAP_adminInstitutionUrl=https://set-me.invalid
       - ERDDAP_adminIndividualName=FAIREASE Admin
       - ERDDAP_adminPosition=Software Engineer
       - ERDDAP_adminPhone=555-555-5555
@@ -148,9 +150,10 @@ services:
       - ERDDAP_adminStateOrProvince=Nowhere
       - ERDDAP_adminPostalCode=99504
       - ERDDAP_adminCountry=Ireland
-      - DATASETSD_MARK_REMOVED_DATASETS_INACTIVE=1
-      - DATASETSD_REFRESH_MISSING_DATASETS=1
-      - DISABLE_CORS=1
+      - ERDDAP_enableCors=true
+      #- DATASETSD_MARK_REMOVED_DATASETS_INACTIVE=1
+      #- DATASETSD_REFRESH_MISSING_DATASETS=1
+      #- DISABLE_CORS=1
       #- AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
       #- AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
       #- AWS_REGION=${AWS_REGION}
@@ -159,7 +162,6 @@ services:
       - ./erddap/datasets.xml:/usr/local/tomcat/content/erddap/datasets.xml:ro
       - ./erddap/fairease_logo.svg:/usr/local/tomcat/content/erddap/images/fairease_logo.svg
       - ./data:/data:ro
-      #- ./datasets.d:/datasets.d:ro
       - ./tomcatLogs:/usr/local/tomcat/logs
       - ./trino-jdbc-468.jar:/usr/local/tomcat/webapps/erddap/WEB-INF/lib/trino-jdbc-468.jar
     networks:

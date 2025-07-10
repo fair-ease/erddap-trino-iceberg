@@ -515,6 +515,7 @@
    <att name="standard_name">
     sea_water_salinity
    </att>
+   <att name="colorBarPalette">KT_haline</att>
    <att name="units">
     Dimensionless
    </att>
@@ -645,6 +646,7 @@
    <att name="units">
     degC
    </att>
+   <att name="colorBarPalette">KT_thermal</att>
    <att name="ioos_category">
     Temperature
    </att>
@@ -755,5 +757,7 @@
    </att>
   </addAttributes>
  </dataVariable>
+<defaultDataQuery>&amp;year=%222020%22&amp;month=%2212%22</defaultDataQuery>
+<defaultGraphQuery>longitude,latitude,salinity&amp;time&gt;=2020-12-01&amp;time&lt;=2021-01-30</defaultGraphQuery>
 </dataset>
 </erddapDatasets>
