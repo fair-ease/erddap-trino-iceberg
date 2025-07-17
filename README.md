@@ -1,5 +1,5 @@
 # ERDDAP, Trino and Iceberg Integration demo
-This repository demonstrates configuring ERDDAP to talk to Trino usign the the Trino jdbc driver and thus enable ERDDAP to access an Apache Iceberg Data Lake House via the Trino Query Engine
+This repository demonstrates configuring ERDDAP to talk to Trino using the Trino jdbc driver and thus enable ERDDAP to access an Apache Iceberg Data Lake House via the Trino Query Engine
 
 
 The demo is based on the [Apache Iceberg Spark Quickstart](https://iceberg.apache.org/spark-quickstart/) docker compose file 
